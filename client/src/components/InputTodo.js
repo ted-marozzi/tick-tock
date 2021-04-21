@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from "react";
 
+import "./InputTodo.css";
+
 const InputTodo = () => {
 
     const [description, setDescription] = useState("");
