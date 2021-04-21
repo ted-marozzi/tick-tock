@@ -1,0 +1,17 @@
+
+
+@media only screen and (max-width: 768px) {
+    .input-form-flex {
+        
+        flex-direction: column;
+        align-items: center;
+
+    }
+
+    .add-btn {
+        max-width: 80px;
+        margin: 10px;
+     
+    }
+}
+

@@ -4,9 +4,11 @@ import React, { Fragment, useState } from "react";
 const EditTodo = ({ todo }) => {
 
     const updateDescription = async (e) => {
+        e.preventDefault()
         try {
+
             const body = { description };
-            const response = await fetch(
+            await fetch(
                 `http://localhost:5000/todos/${todo.todo_id}`,
                 {
                     "method": "PUT",
@@ -25,32 +27,32 @@ const EditTodo = ({ todo }) => {
     return (
         <Fragment>
             
-            <button type="button" class="btn btn-info" 
+            <button type="button" className="btn btn-info" 
                 data-toggle="modal" data-target={`#id-${todo.todo_id}`}>Edit</button>
 
             
-            <div id={`id-${todo.todo_id}`} class="modal fade" role="dialog"
+            <div id={`id-${todo.todo_id}`} className="modal fade" role="dialog"
                 onClick={()=> setDescription(todo.description)}>
-                <div class="modal-dialog">
+                <div className="modal-dialog">
 
                 
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Edit Todo</h4>
-                            <button type="button" class="close" 
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h4 className="modal-title">Edit Todo</h4>
+                            <button type="button" className="close" 
                             data-dismiss="modal"
                             onClick={()=> setDescription(todo.description)}>&times;</button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             <input type="text" 
                             className="form-control" 
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             />
                         </div>
-                        <div class="modal-footer">
+                        <div className="modal-footer">
                             <button type="button" 
-                                class="btn btn-warning" 
+                                className="btn btn-warning" 
                                 data-dismiss="modal"
                                 onClick={e=> updateDescription(e)}
                                 >

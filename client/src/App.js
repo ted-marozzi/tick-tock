@@ -9,12 +9,15 @@ function App() {
   return (
     <Fragment>
       <div className="container">
-
-      <InputTodo />
-      <ListTodo />
-
-
-    </div>
+        <div className="p-5">
+          <InputTodo />
+        </div>
+        <div className="p-5">
+          <ListTodo />
+        </div>
+        
+        
+      </div>
     </Fragment>
 
   );
