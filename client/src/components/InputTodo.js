@@ -8,6 +8,10 @@ const InputTodo = () => {
 
     const onSubmitForm = async(e) => {
       e.preventDefault();
+      if(description === "")  {
+        return
+      }
+
       try {
         const body = { description };
         await fetch('http://localhost:5000/todos',

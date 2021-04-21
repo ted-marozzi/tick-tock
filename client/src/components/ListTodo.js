@@ -38,19 +38,20 @@ const ListTodos = () => {
 
   return (
     <Fragment>
-      {" "}
+      <h2>
+        Tasks
+      </h2>
+  
+  
       <table className="table mt-5 text-center">
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
+
         <tbody>
   
           {todos.map(todo => (
             <tr key={todo.todo_id}>
+              <td>
+                <input type="checkbox"/>
+              </td>
               <td>{todo.description}</td>
               <td>
                 <EditTodo todo={todo} />
