@@ -1,51 +1,64 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
+class InputTodo extends React.Component {
+  constructor(props) {
+    super(props);
 
-import "./InputTodo.css";
+    this.state = {
+      description: "",
+    };
 
-const InputTodo = () => {
+    this.onSubmitForm = this.onSubmitForm.bind(this);
+    this.setDescription = this.setDescription.bind(this);
+  }
 
-    const [description, setDescription] = useState("");
+  setDescription(des) {
+    this.setState({
+      description: des,
+    });
+  }
 
-    const onSubmitForm = async(e) => {
-      e.preventDefault();
-      if(description === "")  {
-        return
-      }
+  async onSubmitForm(e) {
 
-      try {
-        const body = { description };
-        await fetch('http://localhost:5000/todos',
-        {
-          method: "POST",
-          "headers": { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-
-        window.location = "/";
-      } catch (err) {
-        console.log(err.message);
-      }
+    var description =  this.state.description;
+    
+    e.preventDefault();
+    if (description === "") {
+      return;
     }
+    
+    try {
+      var body = { description  };
+      await fetch("http://localhost:5000/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      window.location = "/";
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  render() {
+    
     return (
-    <Fragment>
+      <Fragment>
+        <div className="container">
+          <h1 className="text-center p-5">Tick Tock</h1>
 
-      <div className="container">
-        <h1 className="text-center p-5">
-          Tick Tock
-        </h1>
-
-        <form className="d-flex input-form-flex" onSubmit={onSubmitForm}>
-          <input type="text" className="form-control" 
-          value={description} 
-          onChange={e=> setDescription(e.target.value)}/>
-          <button className="add-btn btn btn-success mx-5">Add</button>
-          
-      
-        </form>
-      </div>
-      
-    </Fragment>
-  ); 
+          <form className="d-flex input-form-flex" onSubmit={this.onSubmitForm}>
+            <input
+              type="text"
+              className="form-control"
+              value={this.state.description}
+              onChange={(e) => this.setDescription(e.target.value)}
+            />
+            <button className="add-btn btn btn-success mx-5">Add</button>
+          </form>
+        </div>
+      </Fragment>
+    );
+  }
 }
-
 export default InputTodo;
