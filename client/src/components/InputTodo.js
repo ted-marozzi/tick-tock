@@ -18,16 +18,15 @@ class InputTodo extends React.Component {
   }
 
   async onSubmitForm(e) {
+    var description = this.state.description;
 
-    var description =  this.state.description;
-    
     e.preventDefault();
     if (description === "") {
       return;
     }
-    
+
     try {
-      var body = { description  };
+      var body = { description };
       await fetch("http://localhost:5000/todos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -41,7 +40,6 @@ class InputTodo extends React.Component {
   }
 
   render() {
-    
     return (
       <Fragment>
         <div className="container">

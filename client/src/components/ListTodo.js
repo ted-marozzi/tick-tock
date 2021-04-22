@@ -10,10 +10,10 @@ const ListTodos = () => {
   const deleteTodo = async (id) => {
     try {
       await fetch(`http://localhost:5000/todos/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
 
-      setTodos(todos.filter(todo => todo.todo_id !== id));
+      setTodos(todos.filter((todo) => todo.todo_id !== id));
     } catch (err) {
       console.log(err.message);
     }
@@ -38,21 +38,18 @@ const ListTodos = () => {
 
   return (
     <Fragment>
-      <h2>
-        Tasks
-      </h2>
-  
-  
-      <table className="table mt-5 text-center">
+      <h2>Tasks</h2>
 
+      <table className="table mt-5 text-center">
         <tbody>
-  
-          {todos.map(todo => (
+          {todos.map((todo) => (
             <tr key={todo.todo_id}>
               <td>
-                <input type="checkbox"/>
+                <input type="checkbox" />
               </td>
-              <td>{todo.description}</td>
+              <td>
+                <text>{todo.description}</text>
+              </td>
               <td>
                 <EditTodo todo={todo} />
               </td>
