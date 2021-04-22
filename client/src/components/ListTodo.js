@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import EditTodo from "./EditTodo";
+import RowTodo from "./RowTodo";
 
 const ListTodos = () => {
   const [todos, setTodos] = useState([]);
@@ -44,12 +45,7 @@ const ListTodos = () => {
         <tbody>
           {todos.map((todo) => (
             <tr key={todo.todo_id}>
-              <td>
-                <input type="checkbox" />
-              </td>
-              <td>
-                <text>{todo.description}</text>
-              </td>
+              <RowTodo todo={todo} />
               <td>
                 <EditTodo todo={todo} />
               </td>
