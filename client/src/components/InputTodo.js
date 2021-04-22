@@ -47,7 +47,7 @@ class InputTodo extends React.Component {
     return (
       <Fragment>
         <div className="container">
-          <h1 className="text-center p-5">Tick Tock</h1>
+          <h1 className="text-center py-5">Tick Tock</h1>
 
           <form className="d-flex input-form-flex" onSubmit={this.onSubmitForm}>
             <input
@@ -57,7 +57,7 @@ class InputTodo extends React.Component {
               value={this.state.description}
               onChange={(e) => this.setDescription(e.target.value)}
             />
-            <button className="add-btn btn btn-success mx-5">Add</button>
+            <button className="add-btn btn btn-success ml-5">Add</button>
           </form>
         </div>
       </Fragment>

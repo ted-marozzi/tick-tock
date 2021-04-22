@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import "./RowTodo.css";
 
 const RowTodo = ({ todo }) => {
+  
   const updateChecked = async () => {
     const checked = !todo.checked;
     try {
