@@ -11,6 +11,10 @@ class InputTodo extends React.Component {
     this.setDescription = this.setDescription.bind(this);
   }
 
+  componentDidMount(){
+    this.todoInput.focus(); 
+  }
+
   setDescription(des) {
     this.setState({
       description: des,
@@ -48,6 +52,7 @@ class InputTodo extends React.Component {
           <form className="d-flex input-form-flex" onSubmit={this.onSubmitForm}>
             <input
               type="text"
+              ref={(input) => { this.todoInput = input; }}
               className="form-control"
               value={this.state.description}
               onChange={(e) => this.setDescription(e.target.value)}

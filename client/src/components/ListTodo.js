@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import EditTodo from "./EditTodo";
 import RowTodo from "./RowTodo";
+import "./InputTodo.css";
 
 const ListTodos = () => {
   const [todos, setTodos] = useState([]);
@@ -34,7 +35,6 @@ const ListTodos = () => {
   useEffect(() => {
     getTodos();
   }, []);
-
 
   return (
     <Fragment>
