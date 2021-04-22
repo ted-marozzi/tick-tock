@@ -1,22 +1,43 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import "./RowTodo.css";
 
 const RowTodo = ({ todo }) => {
-  const [checked, setChecked] = useState(false);
 
+  const updateChecked = async () => {
+
+    const checked = !todo.checked;
+    try {
+      const body = { checked };
+      
+      await fetch(`http://localhost:5000/todos/${todo.todo_id}/updatechecked`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      window.location = "/";
+    
+    } catch (err) {}
+
+  
+  }
+  
   return (
-   
     <Fragment>
       <td>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={ () => setChecked(!checked) }
-        />
+        <span onClick={updateChecked}>
+        
+          <input
+      
+            type="checkbox"
+            readOnly={true}
+            checked={todo.checked}
+            
+          />
+          <span className="hide align-middle"></span>
+        </span>
       </td>
-      <td className={(checked ? "checked" : "none")}>
-        {todo.description}
-      </td>
+      <td className= {(todo.checked ? "checked" : "none") + "  align-middle"}>{todo.description}</td>
     </Fragment>
   );
 };

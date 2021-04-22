@@ -51,15 +51,34 @@ app.get("/todos/:id", async (req, res) => {
   }
 });
 
+
+
 //update a todo
 
-app.put("/todos/:id", async (req, res) => {
+app.put("/todos/:id/updatedes", async (req, res) => {
   try {
     const { id } = req.params;
     const { description } = req.body;
     const updateTodo = await pool.query(
       "UPDATE todo SET description = $1 WHERE todo_id = $2",
       [description, id]
+    );
+
+    res.json("Todo was updated!");
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+//update a todo
+
+app.put("/todos/:id/updatechecked", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { checked } = req.body;
+    const updateTodo = await pool.query(
+      "UPDATE todo SET checked = $1 WHERE todo_id = $2",
+      [checked, id]
     );
 
     res.json("Todo was updated!");

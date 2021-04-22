@@ -35,7 +35,6 @@ const ListTodos = () => {
     getTodos();
   }, []);
 
-  console.log(todos);
 
   return (
     <Fragment>
@@ -46,10 +45,10 @@ const ListTodos = () => {
           {todos.map((todo) => (
             <tr key={todo.todo_id}>
               <RowTodo todo={todo} />
-              <td>
+              <td className="align-middle">
                 <EditTodo todo={todo} />
               </td>
-              <td>
+              <td className="align-middle">
                 <button
                   className="btn btn-danger"
                   onClick={() => deleteTodo(todo.todo_id)}
