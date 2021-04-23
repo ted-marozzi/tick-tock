@@ -7,8 +7,9 @@ import "./InputTodo.css";
 const ListTodos = () => {
   const [todos, setTodos] = useState([]);
 
-  //delete todo function
+  
 
+  //delete todo function
   const deleteTodo = async (id) => {
     try {
       await fetch(`http://localhost:5000/todos/${id}`, {
@@ -26,12 +27,13 @@ const ListTodos = () => {
       const response = await fetch("http://localhost:5000/todos");
       var jsonData = await response.json();
       var i = jsonData.length;
+      
+      
       while (i--) {
         if (jsonData[i].checked) {
           jsonData.push(jsonData.splice(i, 1)[0]);
         }
       }
-
 
       setTodos(jsonData);
     } catch (err) {
@@ -51,7 +53,7 @@ const ListTodos = () => {
         <tbody>
           {todos.map((todo) => (
             <tr key={todo.todo_id}>
-              <RowTodo todo={todo} />
+              <RowTodo todo={todo} getTodos={getTodos} />
               <td className="align-middle">
                 <EditTodo todo={todo} />
               </td>
