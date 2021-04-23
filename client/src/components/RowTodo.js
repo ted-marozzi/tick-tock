@@ -20,7 +20,7 @@ const RowTodo = ({ todo }) => {
 
   return (
     <Fragment>
-      <td>
+      <td className="align-middle">
         <span onClick={updateChecked}>
           <input type="checkbox" readOnly={true} checked={todo.checked} />
           <span className="hide align-middle"></span>

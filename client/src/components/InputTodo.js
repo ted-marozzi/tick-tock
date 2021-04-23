@@ -57,7 +57,7 @@ class InputTodo extends React.Component {
               value={this.state.description}
               onChange={(e) => this.setDescription(e.target.value)}
             />
-            <button className="add-btn btn btn-success ml-5">Add</button>
+            <button className="ml-5 add-btn btn btn-success">Add</button>
           </form>
         </div>
       </Fragment>

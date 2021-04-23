@@ -25,13 +25,13 @@ const ListTodos = () => {
     try {
       const response = await fetch("http://localhost:5000/todos");
       var jsonData = await response.json();
-      
-      for(var i = 0; i < jsonData.length; i++ ) {
-        if(jsonData[i].checked) {
+      var i = jsonData.length;
+      while (i--) {
+        if (jsonData[i].checked) {
           jsonData.push(jsonData.splice(i, 1)[0]);
-
         }
       }
+
 
       setTodos(jsonData);
     } catch (err) {
