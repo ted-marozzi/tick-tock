@@ -15,9 +15,9 @@ const RowTodo = (props) => {
           body: JSON.stringify(body),
         }
       );
-   
-      props.getTodos();
       // Tell parent widget to rerender here
+      props.getTodos();
+      
     } catch (err) {}
   };
 
