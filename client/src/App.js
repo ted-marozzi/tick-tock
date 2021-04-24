@@ -9,14 +9,12 @@ function App() {
   return (
     <Fragment>
       <div className="container">
-        <div className="p-5">
+        <div className="py-5">
           <InputTodo />
         </div>
-        <div className="p-5">
+        <div className="p-3">
           <ListTodo />
-        </div>
-        
-        
+        </div>        
       </div>
     </Fragment>
 

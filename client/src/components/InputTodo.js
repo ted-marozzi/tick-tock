@@ -47,7 +47,7 @@ class InputTodo extends React.Component {
     return (
       <Fragment>
         <div className="container">
-          <h1 className="text-center py-5">Tick Tock</h1>
+          <h1 className="text-center py-3">Tick Tock</h1>
 
           <form className="d-flex input-form-flex" onSubmit={this.onSubmitForm}>
             <input
