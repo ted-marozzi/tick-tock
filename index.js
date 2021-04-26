@@ -20,6 +20,8 @@ if (process.env.NODE_ENV === "production") {
 //create a todo
 app.post("/todos", async (req, res) => {
   try {
+    console.log("hi");
+
     const { description } = req.body;
     const newTodo = await pool.query(
       "INSERT INTO todo (description) VALUES($1) RETURNING *",
