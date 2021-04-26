@@ -8,7 +8,7 @@ const RowTodo = (props) => {
       const body = { checked };
 
       await fetch(
-        `http://localhost:5000/todos/${props.todo.todo_id}/updatechecked`,
+        `/todos/${props.todo.todo_id}/updatechecked`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
