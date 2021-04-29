@@ -1,4 +1,3 @@
-cd server
 start cmd /k nodemon index
-cd ..//client
+cd client
 npm start

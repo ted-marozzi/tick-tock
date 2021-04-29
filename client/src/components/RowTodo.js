@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import "./RowTodo.css";
 
 const RowTodo = (props) => {
+
+  
   const updateChecked = async () => {
     const checked = !props.todo.checked;
     try {
@@ -16,7 +18,7 @@ const RowTodo = (props) => {
         }
       );
       // Tell parent widget to rerender here
-      props.getTodos();
+      props.sortChecked();
       
     } catch (err) {}
   };

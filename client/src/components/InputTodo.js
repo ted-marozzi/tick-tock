@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+
+
 class InputTodo extends React.Component {
   constructor(props) {
     super(props);
@@ -36,18 +38,20 @@ class InputTodo extends React.Component {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      console.log("Rerendiring");
+      
 
-      window.location = "/";
     } catch (err) {
       console.log(err.message);
     }
+    this.props.renderApp();
   }
 
   render() {
     return (
       <Fragment>
         <div className="container">
-          <h1 className="text-center py-3">Tick Tock</h1>
+          <h1 className="text-center py-3 text-primary">Tick Tock Todo</h1>
 
           <form className="d-flex input-form-flex" onSubmit={this.onSubmitForm}>
             <input
@@ -57,7 +61,7 @@ class InputTodo extends React.Component {
               value={this.state.description}
               onChange={(e) => this.setDescription(e.target.value)}
             />
-            <button className="ml-5 add-btn btn btn-success">Add</button>
+            <button className="ml-5 add-btn btn btn-outline-success">Add</button>
           </form>
         </div>
       </Fragment>

@@ -17,29 +17,25 @@ if (process.env.NODE_ENV === "production") {
 
 //ROUTES//
 
-//create a todo
+// create a todo
 app.post("/todos", async (req, res) => {
   try {
-    
-    console.log("Posting");
     const { description } = req.body;
     console.log(description);
     const newTodo = await pool.query(
       "INSERT INTO todo (description) VALUES($1) RETURNING *",
       [description]
     );
-    console.log(newTodo);
-    console.log(newTodo.rows[0]);
 
     res.json(newTodo.rows[0]);
-    console.log("done");
+
   } catch (err) {
     console.error(err.message);
   }
 });
 
-//get all todos
-app.get("/todos", async (req, res) => {
+// get all todos
+app.get("/todos", async (_req, res) => {
   try {
     const allTodos = await pool.query("SELECT * FROM todo ORDER BY todo_id");
     res.json(allTodos.rows);
@@ -48,7 +44,7 @@ app.get("/todos", async (req, res) => {
   }
 });
 
-//get a todo
+// get a todo
 app.get("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -64,7 +60,7 @@ app.get("/todos/:id", async (req, res) => {
 
 
 
-//update a todo
+// update a todo description
 
 app.put("/todos/:id/updatedes", async (req, res) => {
   try {
@@ -81,7 +77,7 @@ app.put("/todos/:id/updatedes", async (req, res) => {
   }
 });
 
-//update a todo
+// update a todo checked
 app.put("/todos/:id/updatechecked", async (req, res) => {
   try {
     const { id } = req.params;
@@ -101,7 +97,7 @@ app.put("/todos/:id/updatechecked", async (req, res) => {
 app.delete("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
+    await pool.query("DELETE FROM todo WHERE todo_id = $1", [
       id
     ]);
     res.json("Todo was deleted!");
@@ -110,7 +106,65 @@ app.delete("/todos/:id", async (req, res) => {
   }
 });
 
-app.get("*", (req, res) => {
+// create a todo
+// get all todos
+// update a todo description
+// update a todo checked
+// delete a todo
+
+// get all todos of a folder
+app.get("/:parent_folder_name/todos", async (_req, res) => {
+  try {
+    const { parent_folder_name } = req.params;
+    const parent_folder_id = await pool.query(
+      "SELECT folder_id FROM folder WHERE name = $1",
+      [parent_folder_name]
+    );
+    
+    const todosOfFolder = await pool.query(
+      "SELECT * FROM todo WHERE parent_folder_id = $1", [
+      parent_folder_id
+    ]);
+  
+    
+    res.json(todosOfFolder.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+
+// create a folder
+// delete a folder
+// update a folder name
+// get a folder
+// move a folder
+// move a todo
+// get path of a folder
+
+/*
+todos table
+
+ todo_id |               description               | checked | parent_folder_id
+---------+-----------------------------------------+----------------------------
+      74 | make orderable                          | f       | null
+      85 | fix db delay                            | f       | 1
+      38 | add complete by (date)                  | t       | 1
+
+
+folders table
+
+folder_id|               name                      | parent_folder_id
+---------+-----------------------------------------+----------------------------
+      1  | personal                                | null
+      2  | coding                                  | 1
+      3  | cleaning                                | 2
+
+*/
+
+
+
+app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
 

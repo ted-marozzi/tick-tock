@@ -21,7 +21,7 @@ const EditTodo = ({ todo }) => {
     <Fragment>
       <button
         type="button"
-        className="btn btn-info"
+        className="btn btn-outline-info"
         onClick={() => {
           setTimeout(() => {
             editInput && editInput.focus();
