@@ -36,7 +36,7 @@ const ListTodos = (props) => {
   const getTodos = async () => {
     try {
       const parent_folder_name = "home"
-      const response = await fetch(`${parent_folder_name}/todos/`);
+      const response = await fetch("/todos/");
       var jsonData = await response.json();
       
       sortChecked(jsonData);
