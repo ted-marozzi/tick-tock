@@ -30,17 +30,20 @@ const ListTodos = (props) => {
       }
     }
 
+
+  
     setTodos(todos);
   }
 
   const getTodos = async () => {
+
     try {
-      const parent_folder_name = "home"
-      const response = await fetch("/todos/");
+      const parentFolderName = 'home'
+      const response = await fetch(`/todos/${parentFolderName}`);
       var jsonData = await response.json();
       
       sortChecked(jsonData);
-      
+ 
     } catch (err) {
       console.error(err.message);
     }
@@ -48,7 +51,7 @@ const ListTodos = (props) => {
 
   useEffect(() => {
     getTodos();
-  }, [props.renderOnChanged]);
+  }, []);
 
   return (
     <Fragment>

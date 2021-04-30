@@ -6,45 +6,47 @@ class InputTodo extends React.Component {
     super(props);
 
     this.state = {
-      description: "",
+      todoName: "",
     };
 
     this.onSubmitForm = this.onSubmitForm.bind(this);
-    this.setDescription = this.setDescription.bind(this);
+    this.setTodoName = this.setDescription.bind(this);
   }
 
   componentDidMount(){
     this.todoInput.focus(); 
   }
 
-  setDescription(des) {
+  setDescription(todoName) {
     this.setState({
-      description: des,
+      todoName: todoName,
     });
   }
 
   async onSubmitForm(e) {
-    var description = this.state.description;
+    var todoName = this.state.todoName;
 
     e.preventDefault();
-    if (description === "") {
+    if (todoName === "") {
       return;
     }
 
     try {
-      var body = { description };
-      await fetch("/todos", {
+      var body = { todoName };
+      const parentFolderName = "home"
+      await fetch(`/todos/${parentFolderName}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      console.log("Rerendiring");
+
       
 
     } catch (err) {
       console.log(err.message);
     }
-    this.props.renderApp();
+    window.location = "./";
+    // TODO: Make this work by changuing app to class this.props.renderApp();
   }
 
   render() {
@@ -58,8 +60,8 @@ class InputTodo extends React.Component {
               type="text"
               ref={(input) => { this.todoInput = input; }}
               className="form-control"
-              value={this.state.description}
-              onChange={(e) => this.setDescription(e.target.value)}
+              value={this.state.todoName}
+              onChange={(e) => this.setTodoName(e.target.value)}
             />
             <button className="ml-5 add-btn btn btn-outline-success">Add</button>
           </form>

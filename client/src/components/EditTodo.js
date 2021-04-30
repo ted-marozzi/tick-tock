@@ -3,10 +3,10 @@ import React, { Fragment, useState } from "react";
 const EditTodo = ({ todo }) => {
   let editInput = null;
 
-  const updateDescription = async (e) => {
+  const updateTodoName= async (e) => {
     e.preventDefault();
     try {
-      const body = { description };
+      const body = { todoName };
       await fetch(`/todos/${todo.todo_id}/updatedes`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -16,7 +16,7 @@ const EditTodo = ({ todo }) => {
     } catch (err) {}
   };
 
-  const [description, setDescription] = useState(todo.description);
+  const [todoName, setTodoName] = useState(todo.todo_name);
   return (
     <Fragment>
       <button
@@ -37,18 +37,18 @@ const EditTodo = ({ todo }) => {
         id={`id-${todo.todo_id}`}
         className="modal fade"
         role="dialog"
-        onClick={() => setDescription(todo.description)}
+        onClick={() => setTodoName(todo.todo_name)}
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <form onSubmit={(e) => updateDescription(e)}>
+            <form onSubmit={(e) => updateTodoName(e)}>
               <div className="modal-header">
                 <h4 className="modal-title">Edit Todo</h4>
                 <button
                   type="button"
                   className="close"
                   data-dismiss="modal"
-                  onClick={() => setDescription(todo.description)}
+                  onClick={() => setTodoName(todo.todo_name)}
                 >
                   &times;
                 </button>
@@ -60,8 +60,8 @@ const EditTodo = ({ todo }) => {
                     editInput = input;
                   }}
                   className="form-control"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={todoName}
+                  onChange={(e) => setTodoName(e.target.value)}
                 />
               </div>
               <div className="modal-footer">
@@ -69,7 +69,7 @@ const EditTodo = ({ todo }) => {
                   type="button"
                   className="btn btn-warning"
                   data-dismiss="modal"
-                  onClick={(e) => updateDescription(e)}
+                  onClick={(e) => updateTodoName(e)}
                 >
                   Confirm
                 </button>
