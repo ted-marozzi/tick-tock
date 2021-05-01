@@ -1,24 +1,21 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import './App.css';
-import InputTodo from "./components/InputTodo";
+import Input from "./components/InputTodo";
 import ListTodo from "./components/ListTodo";
 
 function App() {
+  const [parentFolderId, setParentFolderId] = useState(0);
+  const [renderList, setRenderList] = useState(0);
 
-  const [renderOnChanged, setValue] = useState(0);
 
-  const renderApp = () => {
-    setValue(renderOnChanged+1);
-  }
-  
   return (
     <Fragment>
       <div className="container">
         <div className="py-5">
-          <InputTodo renderApp={renderApp}  />
+          <Input setParentFolderId={setParentFolderId} parentFolderId={parentFolderId} setRenderList={setRenderList} renderList={renderList} />
         </div>
         <div className="p-3">
-          <ListTodo renderOnChanged={renderOnChanged} />
+          <ListTodo setParentFolderId={setParentFolderId} parentFolderId={parentFolderId} renderList={renderList}/>
         </div>
              
       </div>

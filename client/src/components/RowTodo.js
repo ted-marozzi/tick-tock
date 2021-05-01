@@ -7,14 +7,15 @@ const RowTodo = (props) => {
     try {
       const body = { checked };
 
-      await fetch(`/todos/${props.todo.todo_id}/updatechecked`, {
+      await fetch(`/todos/updatechecked/${props.todo.todo_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       // Tell parent widget to rerender here
-      props.sortChecked();
-      window.location = "./";
+    
+      props.renderTodos();
+  
     } catch (err) {}
   };
 

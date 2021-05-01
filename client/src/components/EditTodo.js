@@ -1,18 +1,19 @@
 import React, { Fragment, useState } from "react";
 
-const EditTodo = ({ todo }) => {
+const EditTodo = ({ todo, renderTodos }) => {
   let editInput = null;
 
   const updateTodoName= async (e) => {
     e.preventDefault();
     try {
       const body = { todoName };
-      await fetch(`/todos/${todo.todo_id}/updatedes`, {
+      await fetch(`/todos/updateName/${todo.todo_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      window.location = "/";
+      renderTodos();
+      
     } catch (err) {}
   };
 
