@@ -5,9 +5,9 @@ const FolderTodo = (props) => {
 
   return (
     <Fragment>
-      <td>
-        {props.folder.folder_name}
-      </td>
+      
+      {props.folder.name}
+     
     </Fragment>
   );
 };

@@ -18,14 +18,14 @@ if (process.env.NODE_ENV === "production") {
 //ROUTES//
 
 // create a todo
-app.post("/todos/:parentFolderId", async (req, res) => {
+app.post("/todo/:parentFolderId", async (req, res) => {
   try {
     const { name } = req.body;
     const { parentFolderId } = req.params;
    
-    console.log(name)
+
     const newTodo = await pool.query(
-      "INSERT INTO todo (todo_name, parent_folder_id) VALUES ($1, $2) RETURNING *",
+      "INSERT INTO todo (name, parentFolderId) VALUES ($1, $2) RETURNING *",
       [name, parentFolderId]
     );
 
@@ -36,14 +36,13 @@ app.post("/todos/:parentFolderId", async (req, res) => {
 });
 
 // create a folder
-app.post("/folders/:parentFolderId", async (req, res) => {
+app.post("/folder/:parentFolderId", async (req, res) => {
   try {
     const { name } = req.body;
     const { parentFolderId } = req.params;
-   
-    console.log(name)
+
     const newTodo = await pool.query(
-      "INSERT INTO folder (folder_name, parent_folder_id) VALUES ($1, $2) RETURNING *",
+      "INSERT INTO folder (name, parentFolderId) VALUES ($1, $2) RETURNING *",
       [name, parentFolderId]
     );
 
@@ -59,7 +58,7 @@ app.get("/todos/:parentFolderId", async (req, res) => {
 
     const { parentFolderId } = req.params;
     const todosOfFolder = await pool.query(
-      "SELECT * FROM todo WHERE parent_folder_id = $1 ORDER BY todo_id",
+      "SELECT * FROM todo WHERE parentFolderId = $1 ORDER BY id",
       [parentFolderId]
     );
 
@@ -78,7 +77,7 @@ app.get("/folders/:parentFolderId", async (req, res) => {
     const { parentFolderId } = req.params;
 
     const foldersOfFolder = await pool.query(
-      "SELECT * FROM folder WHERE parent_folder_id = $1 ORDER BY folder_id",
+      "SELECT * FROM folder WHERE parentFolderId = $1 ORDER BY id",
       [parentFolderId]
     );
    
@@ -89,10 +88,10 @@ app.get("/folders/:parentFolderId", async (req, res) => {
 });
 
 // get a todo
-app.get("/todos/:id", async (req, res) => {
+app.get("/todo/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
+    const todo = await pool.query("SELECT * FROM todo WHERE id = $1", [
       id,
     ]);
 
@@ -102,29 +101,33 @@ app.get("/todos/:id", async (req, res) => {
   }
 });
 
-// update a todo description
+// update a todo
 
-app.put("/todos/updateName/:id", async (req, res) => {
+app.put("/updateName/:listItemType/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { todoName } = req.body;
-    await pool.query("UPDATE todo SET todo_name = $1 WHERE todo_id = $2", [
-      todoName,
+    
+    const { listItemType, id } = req.params;
+    const { listItemName } = req.body;
+
+    await pool.query(`UPDATE ${listItemType} SET name = $1 WHERE id = $2`, [
+
+      listItemName,
       id,
     ]);
 
-    res.json("Todo was updated!");
+    res.json(`${listItemType} was updated!`);
   } catch (err) {
     console.error(err.message);
   }
 });
 
+
 // update a todo checked
-app.put("/todos/updateChecked/:id", async (req, res) => {
+app.put("/todo/updateChecked/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { checked } = req.body;
-    await pool.query("UPDATE todo SET checked = $1 WHERE todo_id = $2", [
+    await pool.query("UPDATE todo SET checked = $1 WHERE id = $2", [
       checked,
       id,
     ]);
@@ -136,10 +139,10 @@ app.put("/todos/updateChecked/:id", async (req, res) => {
 });
 
 //delete a todo
-app.delete("/todos/:id", async (req, res) => {
+app.delete("/todo/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM todo WHERE todo_id = $1", [id]);
+    await pool.query("DELETE FROM todo WHERE id = $1", [id]);
     res.json("Todo was deleted!");
   } catch (err) {
     console.error(err.message);
@@ -163,7 +166,7 @@ app.delete("/todos/:id", async (req, res) => {
 /*
 todos table
 
- todo_id |               description               | checked | parent_folder_id
+      id |               name                      | checked | parentFolderId
 ---------+-----------------------------------------+----------------------------
       74 | make orderable                          | f       | null
       85 | fix db delay                            | f       | 1
@@ -172,7 +175,7 @@ todos table
 
 folders table
 
-folder_id|               name                      | parent_folder_id
+       id|               name                      | parentFolderId
 ---------+-----------------------------------------+----------------------------
       1  | personal                                | null
       2  | coding                                  | 1

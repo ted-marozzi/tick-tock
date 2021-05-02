@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import './App.css';
 import Input from "./components/InputTodo";
 import ListTodo from "./components/ListTodo";
@@ -15,7 +15,7 @@ function App() {
           <Input setParentFolderId={setParentFolderId} parentFolderId={parentFolderId} setRenderList={setRenderList} renderList={renderList} />
         </div>
         <div className="p-3">
-          <ListTodo setParentFolderId={setParentFolderId} parentFolderId={parentFolderId} renderList={renderList}/>
+          <ListTodo setParentFolderId={setParentFolderId} parentFolderId={parentFolderId} setRenderList={setRenderList} renderList={renderList}/>
         </div>
              
       </div>

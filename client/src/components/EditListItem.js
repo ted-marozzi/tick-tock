@@ -1,23 +1,25 @@
 import React, { Fragment, useState } from "react";
 
-const EditTodo = ({ todo, renderTodos }) => {
+const EditListItem = ({ listItem, renderList, setRenderList }) => {
   let editInput = null;
+  const [listItemName, setListItemName] = useState(listItem.name);
 
-  const updateTodoName= async (e) => {
+  const updateListItemName= async (e) => {
     e.preventDefault();
     try {
-      const body = { todoName };
-      await fetch(`/todos/updateName/${todo.todo_id}`, {
+      
+      const body = { listItemName };
+      await fetch(`/updateName/${listItem.type}/${listItem.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      renderTodos();
+      setRenderList(renderList + 1);
       
     } catch (err) {}
   };
 
-  const [todoName, setTodoName] = useState(todo.todo_name);
+
   return (
     <Fragment>
       <button
@@ -29,27 +31,27 @@ const EditTodo = ({ todo, renderTodos }) => {
           }, 200);
         }}
         data-toggle="modal"
-        data-target={`#id-${todo.todo_id}`}
+        data-target={`#id-${listItem.id}`}
       >
         Edit
       </button>
 
       <div
-        id={`id-${todo.todo_id}`}
+        id={`id-${listItem.id}`}
         className="modal fade"
         role="dialog"
-        onClick={() => setTodoName(todo.todo_name)}
+        onClick={() => setListItemName(listItem.name)}
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <form onSubmit={(e) => updateTodoName(e)}>
+            <form onSubmit={(e) => updateListItemName(e)}>
               <div className="modal-header">
-                <h4 className="modal-title">Edit Todo</h4>
+                <h4 className="modal-title">Edit {listItem.type}</h4>
                 <button
                   type="button"
                   className="close"
                   data-dismiss="modal"
-                  onClick={() => setTodoName(todo.todo_name)}
+                  onClick={() => setListItemName(listItem.name)}
                 >
                   &times;
                 </button>
@@ -61,8 +63,8 @@ const EditTodo = ({ todo, renderTodos }) => {
                     editInput = input;
                   }}
                   className="form-control"
-                  value={todoName}
-                  onChange={(e) => setTodoName(e.target.value)}
+                  value={listItemName}
+                  onChange={(e) => setListItemName(e.target.value)}
                 />
               </div>
               <div className="modal-footer">
@@ -70,7 +72,7 @@ const EditTodo = ({ todo, renderTodos }) => {
                   type="button"
                   className="btn btn-warning"
                   data-dismiss="modal"
-                  onClick={(e) => updateTodoName(e)}
+                  onClick={(e) => updateListItemName(e)}
                 >
                   Confirm
                 </button>
@@ -83,4 +85,4 @@ const EditTodo = ({ todo, renderTodos }) => {
   );
 };
 
-export default EditTodo;
+export default EditListItem;

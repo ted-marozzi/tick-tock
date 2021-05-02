@@ -33,13 +33,13 @@ class Input extends React.Component {
     try {
       var body = { name };
       if (isTask) {
-        await fetch(`/todos/${this.props.parentFolderId}`, {
+        await fetch(`/todo/${this.props.parentFolderId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
       } else {
-        await fetch(`/folders/${this.props.parentFolderId}`, {
+        await fetch(`/folder/${this.props.parentFolderId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),

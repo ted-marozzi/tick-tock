@@ -1,20 +1,20 @@
 import React, { Fragment } from "react";
 import "./RowTodo.css";
 
-const RowTodo = (props) => {
+const RowTodo = ({todo, renderList, setRenderList}) => {
   const updateChecked = async () => {
-    const checked = !props.todo.checked;
+    const checked = !todo.checked;
     try {
       const body = { checked };
 
-      await fetch(`/todos/updatechecked/${props.todo.todo_id}`, {
+      await fetch(`/todo/updateChecked/${todo.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       // Tell parent widget to rerender here
-    
-      props.renderTodos();
+      setRenderList(renderList + 1);
+      
   
     } catch (err) {}
   };
@@ -23,14 +23,14 @@ const RowTodo = (props) => {
     <Fragment>
       <td className="align-middle">
         <span onClick={updateChecked}>
-          <input type="checkbox" readOnly={true} checked={props.todo.checked} />
+          <input type="checkbox" readOnly={true} checked={todo.checked} />
           <span className="hide align-middle"></span>
         </span>
       </td>
       <td
-        className={(props.todo.checked ? "checked" : "none") + "  align-middle"}
+        className={(todo.checked ? "checked" : "none") + "  align-middle"}
       >
-        {props.todo.todo_name}
+        {todo.name}
       </td>
     </Fragment>
   );
