@@ -5,9 +5,15 @@ import RowTodo from "./RowTodo";
 import "./css/InputItem.css";
 import FolderItem from "./FolderItem";
 
-const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderList }) => {
+const ListItems = ({
+  setParentFolderId,
+  parentFolderId,
+  setRenderList,
+  renderList,
+}) => {
   const [todos, setTodos] = useState([]);
   const [folders, setFolders] = useState([]);
+  const [path, setPath] = useState([{ id: 0, name: "Home",}]);
 
   //delete todo function
   const deleteListItem = async (listItem) => {
@@ -17,12 +23,11 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
         method: "DELETE",
       });
 
-      if(listItem.type === "todo")  {
+      if (listItem.type === "todo") {
         setTodos(todos.filter((todo) => todo.id !== listItem.id));
-      } else if(listItem.type === "folder") {
+      } else if (listItem.type === "folder") {
         setFolders(folders.filter((folder) => folder.id !== listItem.id));
       }
-      
     } catch (err) {
       console.log(err.message);
     }
@@ -40,7 +45,6 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
     return unsortedTodos;
   };
 
-
   useEffect(() => {
     const getTodos = async () => {
       try {
@@ -55,9 +59,9 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
     const getFolders = async () => {
       try {
         const response = await fetch(`/folder/${parentFolderId}`);
-       
+
         var folderResponse = await response.json();
-        
+
         folderResponse.map((folder) => (folder.type = "folder"));
 
         setFolders(folderResponse);
@@ -65,13 +69,33 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
         console.error(err.message);
       }
     };
+
+    const getPath = async () => {
+      try {
+        const response = await fetch(`/getPath/${parentFolderId}`);
+
+        const pathResponse = await response.json();
+
+        setPath(pathResponse.reverse());
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
     getTodos();
     getFolders();
+    getPath();
   }, [parentFolderId, renderList]);
 
   return (
     <Fragment>
-      <h2 className="text-primary">Folders</h2>
+      <h3 className="text-primary">
+        <span>Click me: </span>
+        {path.map((folder) => (
+          <span key={folder.id} onClick={() => setParentFolderId(folder.id)}>/{folder.name}</span>
+        ))}
+      </h3>
+
       <Flipper>
         <table className="table mt-3 text-center">
           <tbody>
@@ -81,7 +105,7 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
                   <td onClick={() => setParentFolderId(folder.id)}>
                     <FolderItem folder={folder} />
                   </td>
-                 
+
                   <td className="align-middle">
                     <EditListItem
                       listItem={folder}
@@ -103,14 +127,18 @@ const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
           </tbody>
         </table>
       </Flipper>
-      <h2 className="text-primary">Tasks</h2>
+      <h3 className="text-primary">Tasks</h3>
       <Flipper flipKey={todos.map((todo) => todo.id).join("")}>
         <table className="table mt-3 text-center">
           <tbody>
             {todos.map((todo) => (
               <Flipped key={todo.id} flipId={todo.id}>
                 <tr key={todo.id}>
-                  <RowTodo todo={todo} renderList={renderList} setRenderList={setRenderList} />
+                  <RowTodo
+                    todo={todo}
+                    renderList={renderList}
+                    setRenderList={setRenderList}
+                  />
                   <td className="align-middle">
                     <EditListItem
                       listItem={todo}

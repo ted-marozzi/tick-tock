@@ -172,6 +172,20 @@ app.delete("/folder/:id", async (req, res) => {
   }
 });
 
+app.get("/getPath/:parentFolderId", async (req, res) => {
+  try {
+    const { parentFolderId } = req.params;
+    const path = await pool.query("WITH RECURSIVE folderHierarchy AS ( SELECT id, name, parentFolderId FROM folder WHERE id = $1 UNION ALL SELECT f.id, f.name, f.parentFolderId FROM folder f INNER JOIN folderHierarchy fh on f.id = fh.parentFolderId ) SELECT name, id FROM folderHierarchy", [
+      parentFolderId,
+    ]);
+    
+    res.json(path.rows);
+        
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 // create a todo
 // get all todos
 // update a todo description
