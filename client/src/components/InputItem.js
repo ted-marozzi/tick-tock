@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-class Input extends React.Component {
+class InputItem extends React.Component {
   constructor(props) {
     super(props);
 
@@ -90,4 +90,4 @@ class Input extends React.Component {
     );
   }
 }
-export default Input;
+export default InputItem;

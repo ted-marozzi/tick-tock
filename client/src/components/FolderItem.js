@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-const FolderTodo = (props) => {
+const FolderItem = (props) => {
  
 
   return (
@@ -12,4 +12,4 @@ const FolderTodo = (props) => {
   );
 };
 
-export default FolderTodo;
+export default FolderItem;

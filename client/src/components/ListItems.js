@@ -2,21 +2,27 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Flipper, Flipped } from "react-flip-toolkit";
 import EditListItem from "./EditListItem";
 import RowTodo from "./RowTodo";
-import "./InputTodo.css";
-import FolderTodo from "./FolderTodo";
+import "./css/InputItem.css";
+import FolderItem from "./FolderItem";
 
-const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderList }) => {
+const ListItems = ({ setParentFolderId, parentFolderId, setRenderList, renderList }) => {
   const [todos, setTodos] = useState([]);
   const [folders, setFolders] = useState([]);
 
   //delete todo function
-  const deleteTodo = async (id) => {
+  const deleteListItem = async (listItem) => {
+    console.log(listItem);
     try {
-      await fetch(`/todo/${id}`, {
+      await fetch(`/${listItem.type}/${listItem.id}`, {
         method: "DELETE",
       });
 
-      setTodos(todos.filter((todo) => todo.id !== id));
+      if(listItem.type === "todo")  {
+        setTodos(todos.filter((todo) => todo.id !== listItem.id));
+      } else if(listItem.type === "folder") {
+        setFolders(folders.filter((folder) => folder.id !== listItem.id));
+      }
+      
     } catch (err) {
       console.log(err.message);
     }
@@ -38,7 +44,7 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await fetch(`/todos/${parentFolderId}`);
+        const response = await fetch(`/todo/${parentFolderId}`);
         var todoResponse = await response.json();
         todoResponse.map((todo) => (todo.type = "todo"));
         setTodos(sortChecked(todoResponse));
@@ -48,8 +54,10 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
     };
     const getFolders = async () => {
       try {
-        const response = await fetch(`/folders/${parentFolderId}`);
+        const response = await fetch(`/folder/${parentFolderId}`);
+       
         var folderResponse = await response.json();
+        
         folderResponse.map((folder) => (folder.type = "folder"));
 
         setFolders(folderResponse);
@@ -71,7 +79,7 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
               <Flipped key={folder.id} flipId={folder.id}>
                 <tr key={folder.id}>
                   <td onClick={() => setParentFolderId(folder.id)}>
-                    <FolderTodo folder={folder} />
+                    <FolderItem folder={folder} />
                   </td>
                  
                   <td className="align-middle">
@@ -80,6 +88,14 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
                       renderList={renderList}
                       setRenderList={setRenderList}
                     />
+                  </td>
+                  <td className="align-middle">
+                    <button
+                      className="btn btn-outline-danger"
+                      onClick={() => deleteListItem(folder)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               </Flipped>
@@ -105,7 +121,7 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
                   <td className="align-middle">
                     <button
                       className="btn btn-outline-danger"
-                      onClick={() => deleteTodo(todo.id)}
+                      onClick={() => deleteListItem(todo)}
                     >
                       Delete
                     </button>
@@ -120,4 +136,4 @@ const ListTodos = ({ setParentFolderId, parentFolderId, setRenderList, renderLis
   );
 };
 
-export default ListTodos;
+export default ListItems;

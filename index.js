@@ -52,40 +52,37 @@ app.post("/folder/:parentFolderId", async (req, res) => {
   }
 });
 
-// get all todos of a folder
-app.get("/todos/:parentFolderId", async (req, res) => {
+// get all listItems of a folder
+app.get("/todo/:parentFolderId", async (req, res) => {
   try {
-
     const { parentFolderId } = req.params;
-    const todosOfFolder = await pool.query(
-      "SELECT * FROM todo WHERE parentFolderId = $1 ORDER BY id",
+    const listItemsOfFolder = await pool.query(
+      `SELECT * FROM todo WHERE parentFolderId = $1 ORDER BY id`,
       [parentFolderId]
     );
 
-  
-
-    res.json(todosOfFolder.rows);
+    res.json(listItemsOfFolder.rows);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-// get all folders of a folder
-app.get("/folders/:parentFolderId", async (req, res) => {
+// get all listItems of a folder
+app.get("/folder/:parentFolderId", async (req, res) => {
   try {
     
     const { parentFolderId } = req.params;
-
-    const foldersOfFolder = await pool.query(
-      "SELECT * FROM folder WHERE parentFolderId = $1 ORDER BY id",
+    const listItemsOfFolder = await pool.query(
+      `SELECT * FROM folder WHERE parentFolderId = $1 ORDER BY id`,
       [parentFolderId]
     );
-   
-    res.json(foldersOfFolder.rows);
+
+    res.json(listItemsOfFolder.rows);
   } catch (err) {
     console.error(err.message);
   }
 });
+
 
 // get a todo
 app.get("/todo/:id", async (req, res) => {
@@ -144,6 +141,32 @@ app.delete("/todo/:id", async (req, res) => {
     const { id } = req.params;
     await pool.query("DELETE FROM todo WHERE id = $1", [id]);
     res.json("Todo was deleted!");
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+//delete a folder
+app.delete("/folder/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const foldersOfFolder = await pool.query(
+      `SELECT id FROM folder WHERE parentFolderId = $1 ORDER BY id`,
+      [id]
+    );
+    const todosOfFolder = await pool.query(
+      `SELECT id FROM todo WHERE parentFolderId = $1 ORDER BY id`,
+      [id]
+    );
+
+    if(foldersOfFolder.rows.length == 0 && todosOfFolder.rows.length == [])  {
+      
+      await pool.query("DELETE FROM folder WHERE id = $1", [id]);
+      res.json("Folder was deleted!");
+    } else  {
+      res.json("Folder is not empty and thus can't be deleted");
+    }
+
   } catch (err) {
     console.error(err.message);
   }

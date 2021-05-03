@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import "./RowTodo.css";
+import "./css/RowTodo.css";
 
 const RowTodo = ({todo, renderList, setRenderList}) => {
   const updateChecked = async () => {
