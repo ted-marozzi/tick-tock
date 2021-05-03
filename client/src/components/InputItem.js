@@ -59,7 +59,7 @@ class InputItem extends React.Component {
     return (
       <Fragment>
         <div className="container">
-          <h1 className="text-center py-3 text-primary">Tick Tock Todo</h1>
+          <h1 className="text-center py-3">Tick Tock Todo</h1>
 
           <form className="d-flex input-form-flex">
             <input

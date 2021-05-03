@@ -5,9 +5,8 @@ const FolderItem = (props) => {
 
   return (
     <Fragment>
-      
-      {props.folder.name}
-     
+      <button className="btn btn-outline-dark" >{props.folder.name}</button>
+
     </Fragment>
   );
 };

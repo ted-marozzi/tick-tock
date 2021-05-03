@@ -13,7 +13,7 @@ const ListItems = ({
 }) => {
   const [todos, setTodos] = useState([]);
   const [folders, setFolders] = useState([]);
-  const [path, setPath] = useState([{ id: 0, name: "Home",}]);
+  const [path, setPath] = useState([{ id: 0, name: "Home" }]);
 
   //delete todo function
   const deleteListItem = async (listItem) => {
@@ -89,12 +89,23 @@ const ListItems = ({
 
   return (
     <Fragment>
-      <h3 className="text-primary">
-        <span>Click me: </span>
+      <h2>
+        <span>Current Folder: </span>
         {path.map((folder) => (
-          <span key={folder.id} onClick={() => setParentFolderId(folder.id)}>/{folder.name}</span>
+          <span>
+            <span> / </span>
+            <button
+              className="btn btn-outline-dark"
+              key={folder.id}
+              onClick={() => setParentFolderId(folder.id)}
+            >
+              {folder.name}
+            </button>
+          </span>
         ))}
-      </h3>
+        <span> / </span>
+      </h2>
+      
 
       <Flipper>
         <table className="table mt-3 text-center">
@@ -127,7 +138,7 @@ const ListItems = ({
           </tbody>
         </table>
       </Flipper>
-      <h3 className="text-primary">Tasks</h3>
+      <h2>Tasks</h2>
       <Flipper flipKey={todos.map((todo) => todo.id).join("")}>
         <table className="table mt-3 text-center">
           <tbody>
