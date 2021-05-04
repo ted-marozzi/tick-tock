@@ -6,40 +6,12 @@ import ListItems from "./components/ListItems";
 function App() {
   const [parentFolderId, setParentFolderId] = useState(0);
   const [renderList, setRenderList] = useState(0);
-  const [ipData, setIpData] = useState({
-    "ip": null,
-    "lat": null,
-    "lon": null,
-  });
+
 
   useEffect(() => {
-    //delete todo function
+   
 
-
-    const getGeoLoc = async () => {
-      try {
-        const response = await fetch("https://geolocation-db.com/json/");
-        await response.json().then((geoLoc) => {
-          setIpData({
-            "ip": geoLoc.IPv4,
-            "lat": geoLoc.latitude,
-            "lon": geoLoc.longitude,
-          });
-        });
-     
-      } catch (err) {
-        console.log(err.message);
-      }
-
-      return null;
-    };
-
-    getGeoLoc();
-  }, []);
-
-  useEffect(() => {
-
-    const logIp = async () => {
+    const logIp = async (ipData) => {
       
       try {
         await fetch("/ip", {
@@ -52,8 +24,28 @@ function App() {
       }
     };
 
-    logIp();
-  }, ipData);
+    const getGeoLoc = async () => {
+      try {
+        const response = await fetch("https://geolocation-db.com/json/");
+        await response.json().then((geoLoc) => {
+          const ipData = {
+            "ip": geoLoc.IPv4,
+            "lat": geoLoc.latitude,
+            "lon": geoLoc.longitude,
+          };
+          logIp(ipData)
+        });
+     
+      } catch (err) {
+        console.log(err.message);
+      }
+
+      return null;
+    };
+
+    getGeoLoc();
+  }, []);
+
 
   return (
     <Fragment>
