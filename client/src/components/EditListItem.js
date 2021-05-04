@@ -1,21 +1,31 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 
-const EditListItem = ({ listItem, renderList, setRenderList }) => {
+const EditListItem = ({ listItem , setListItem}) => {
   const submitRef = React.useRef(null);
   let editInput = "";
-  const [listItemName, setListItemName] = useState(listItem.name);
+
+  const setListItemName = (name) => {
+    listItem.name = name;
+    setListItem(listItem);
+  };
 
   const updateListItemName = async (e) => {
     e.preventDefault();
     try {
+      console.log(listItem.name);
+      const listItemName = listItem.name;
       const body = { listItemName };
       await fetch(`/updateName/${listItem.type}/${listItem.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      setRenderList(renderList + 1);
-    } catch (err) {}
+      setListItemName(listItem.name);
+      
+    } catch (err) {
+      console.error(err);
+    }
+    
   };
 
   return (
@@ -38,11 +48,9 @@ const EditListItem = ({ listItem, renderList, setRenderList }) => {
         <div className="modal-dialog">
           <div className="modal-content">
             <form
-             
               onSubmit={(e) => {
                 updateListItemName(e);
-                submitRef.current.click()
-                
+                submitRef.current.click();
               }}
             >
               <div className="modal-header">
@@ -58,7 +66,7 @@ const EditListItem = ({ listItem, renderList, setRenderList }) => {
                     editInput = input;
                   }}
                   className="form-control"
-                  value={listItemName}
+                  value={listItem.name}
                   onChange={(e) => setListItemName(e.target.value)}
                 />
               </div>

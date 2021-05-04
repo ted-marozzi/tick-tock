@@ -33,7 +33,7 @@ function App() {
             "lat": geoLoc.latitude,
             "lon": geoLoc.longitude,
           };
-          logIp(ipData)
+          logIp(ipData);
         });
      
       } catch (err) {

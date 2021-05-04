@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 // Log ip
 app.post("/ip", async (req, res) => {
   try {
-    console.log(req.body);
+    
     const { ip, lat, lon } = req.body;
     const newTodo = await pool.query(
       "INSERT INTO ip (ip, lat, lon) VALUES ($1, $2, $3) RETURNING *",
@@ -120,7 +120,7 @@ app.put("/updateName/:listItemType/:id", async (req, res) => {
     
     const { listItemType, id } = req.params;
     const { listItemName } = req.body;
-
+    console.log(listItemName);
     await pool.query(`UPDATE ${listItemType} SET name = $1 WHERE id = $2`, [
 
       listItemName,

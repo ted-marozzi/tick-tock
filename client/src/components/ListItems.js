@@ -14,7 +14,6 @@ const ListItems = ({
   const [todos, setTodos] = useState([]);
   const [folders, setFolders] = useState([]);
   const [path, setPath] = useState([{ id: 0, name: "Home" }]);
-
   const [showMessage, setShowMessage] = useState(false);
 
   //delete todo function
@@ -46,6 +45,25 @@ const ListItems = ({
     }
 
     return unsortedTodos;
+  };
+
+  const setListItems = (setListItemsFn, listItems) => {
+    setListItemsFn(listItems);
+  };
+
+  const setListItem = (setListItemsFn, listItems, newListItem) => {
+    const index = listItems.findIndex(
+      (listItem) => listItem.id === newListItem.id
+    );
+    listItems[index] = newListItem;
+    setListItems(setListItemsFn, [...listItems]);
+  };
+
+  const setTodo = (todo) => {
+    setListItem(setTodos, todos, todo);
+  };
+  const setFolder = (folder) => {
+    setListItem(setFolders, folders, folder);
   };
 
   useEffect(() => {
@@ -86,7 +104,7 @@ const ListItems = ({
     };
     getFolders();
     getTodos();
-    
+
     getPath();
   }, [parentFolderId, renderList]);
 
@@ -99,8 +117,6 @@ const ListItems = ({
   }, [showMessage]);
   return (
     <Fragment>
-      
-
       <h2>
         <span>Current Folder: </span>
         {path.slice(0, -1).map((folder) => (
@@ -115,12 +131,19 @@ const ListItems = ({
           </span>
         ))}
         <span> / </span>
-        <span><small>{path[path.length-1].name}</small></span>
+        <span>
+          <small>{path[path.length - 1].name}</small>
+        </span>
       </h2>
-      {showMessage && <h6 className="text-warning">Folder can't be deleted as it is not empty.</h6>}
+      {showMessage && (
+        <h6 className="text-warning">
+          Folder can't be deleted as it is not empty.
+        </h6>
+      )}
       <Flipper>
         <table className="table mt-3 text-center">
           <tbody>
+            <div>{console.log(folders)}</div>
             {folders.map((folder) => (
               <Flipped key={folder.id} flipId={folder.id}>
                 <tr key={folder.id}>
@@ -129,11 +152,7 @@ const ListItems = ({
                   </td>
 
                   <td className="align-middle">
-                    <EditListItem
-                      listItem={folder}
-                      renderList={renderList}
-                      setRenderList={setRenderList}
-                    />
+                    <EditListItem listItem={folder} setListItem={setFolder} />
                   </td>
                   <td className="align-middle">
                     <button
@@ -162,11 +181,7 @@ const ListItems = ({
                     setRenderList={setRenderList}
                   />
                   <td className="align-middle">
-                    <EditListItem
-                      listItem={todo}
-                      renderList={renderList}
-                      setRenderList={setRenderList}
-                    />
+                    <EditListItem listItem={todo} setListItem={setTodo} />
                   </td>
                   <td className="align-middle">
                     <button
