@@ -19,15 +19,19 @@ const ListItems = ({
   //delete todo function
   const deleteListItem = async (listItem) => {
     try {
+
+      if (listItem.type === "todo") {
+        setTodos(todos.filter((todo) => todo.id !== listItem.id));
+      } else if (listItem.type === "folder") {
+        setFolders(folders.filter((folder) => folder.id !== listItem.id));
+      }
       const res = await fetch(`/${listItem.type}/${listItem.id}`, {
         method: "DELETE",
       });
 
-      if (res.ok && listItem.type === "todo") {
-        setTodos(todos.filter((todo) => todo.id !== listItem.id));
-      } else if (res.ok && listItem.type === "folder") {
-        setFolders(folders.filter((folder) => folder.id !== listItem.id));
-      } else {
+      if(!res.ok) {
+        setTodos(todos);
+        setFolders(folders);
         setShowMessage(true);
       }
     } catch (err) {

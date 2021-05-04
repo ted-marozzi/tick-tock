@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import "./css/RowTodo.css";
 
-const RowTodo = ({todo, renderList, setRenderList}) => {
+const RowTodo = ({todo}) => {
   const updateChecked = async () => {
     const checked = !todo.checked;
     try {
