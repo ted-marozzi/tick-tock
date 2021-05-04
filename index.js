@@ -16,6 +16,21 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //ROUTES//
+// Log ip
+app.post("/ip", async (req, res) => {
+  try {
+    console.log(req.body);
+    const { ip, lat, lon } = req.body;
+    const newTodo = await pool.query(
+      "INSERT INTO ip (ip, lat, lon) VALUES ($1, $2, $3) RETURNING *",
+      [ip, lat, lon]
+    );
+
+    res.json(newTodo.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 // create a todo
 app.post("/todo/:parentFolderId", async (req, res) => {
@@ -164,6 +179,7 @@ app.delete("/folder/:id", async (req, res) => {
       await pool.query("DELETE FROM folder WHERE id = $1", [id]);
       res.json("Folder was deleted!");
     } else  {
+      res.status(400);
       res.json("Folder is not empty and thus can't be deleted");
     }
 

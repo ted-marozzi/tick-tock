@@ -46,7 +46,7 @@ ALTER TABLE folder
    REFERENCES folder(folder_id);
 
 
-
+CREATE TABLE ip (ip VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, lat double precision, lon double precision);
 /*
 todos table
 

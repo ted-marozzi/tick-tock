@@ -15,18 +15,21 @@ const ListItems = ({
   const [folders, setFolders] = useState([]);
   const [path, setPath] = useState([{ id: 0, name: "Home" }]);
 
+  const [showMessage, setShowMessage] = useState(false);
+
   //delete todo function
   const deleteListItem = async (listItem) => {
-    console.log(listItem);
     try {
-      await fetch(`/${listItem.type}/${listItem.id}`, {
+      const res = await fetch(`/${listItem.type}/${listItem.id}`, {
         method: "DELETE",
       });
 
-      if (listItem.type === "todo") {
+      if (res.ok && listItem.type === "todo") {
         setTodos(todos.filter((todo) => todo.id !== listItem.id));
-      } else if (listItem.type === "folder") {
+      } else if (res.ok && listItem.type === "folder") {
         setFolders(folders.filter((folder) => folder.id !== listItem.id));
+      } else {
+        setShowMessage(true);
       }
     } catch (err) {
       console.log(err.message);
@@ -81,22 +84,30 @@ const ListItems = ({
         console.error(err.message);
       }
     };
-
-    getTodos();
     getFolders();
+    getTodos();
+    
     getPath();
   }, [parentFolderId, renderList]);
 
+  useEffect(() => {
+    if (showMessage) {
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 3000);
+    }
+  }, [showMessage]);
   return (
     <Fragment>
+      
+
       <h2>
         <span>Current Folder: </span>
-        {path.map((folder) => (
-          <span>
+        {path.slice(0, -1).map((folder) => (
+          <span key={folder.id}>
             <span> / </span>
             <button
               className="btn btn-outline-dark"
-              key={folder.id}
               onClick={() => setParentFolderId(folder.id)}
             >
               {folder.name}
@@ -104,9 +115,9 @@ const ListItems = ({
           </span>
         ))}
         <span> / </span>
+        <span><small>{path[path.length-1].name}</small></span>
       </h2>
-      
-
+      {showMessage && <h6 className="text-warning">Folder can't be deleted as it is not empty.</h6>}
       <Flipper>
         <table className="table mt-3 text-center">
           <tbody>
