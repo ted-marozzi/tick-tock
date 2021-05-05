@@ -41,6 +41,16 @@ const ListItems = ({
 
   const sortChecked = (unsortedTodos) => {
     var i = unsortedTodos.length;
+    
+    unsortedTodos.sort((a,b) => {
+      if( a.id > b.id )  {
+        return 1;
+      } else if (a.id === b.id) {
+        return 0;
+      } else if( a.id < b.id ) {
+        return -1;
+      }
+    });
 
     while (i--) {
       if (unsortedTodos[i].checked) {
@@ -64,7 +74,7 @@ const ListItems = ({
   };
 
   const setTodo = (todo) => {
-    setListItem(setTodos, todos, todo);
+    setListItem(setTodos, sortChecked(todos), todo);
   };
   const setFolder = (folder) => {
     setListItem(setFolders, folders, folder);
@@ -181,8 +191,7 @@ const ListItems = ({
                 <tr key={todo.id}>
                   <RowTodo
                     todo={todo}
-                    renderList={renderList}
-                    setRenderList={setRenderList}
+                    setListItem={setTodo}
                   />
                   <td className="align-middle">
                     <EditListItem listItem={todo} setListItem={setTodo} />

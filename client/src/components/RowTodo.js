@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import "./css/RowTodo.css";
 
-const RowTodo = ({todo}) => {
+const RowTodo = ({todo, setListItem}) => {
   const updateChecked = async () => {
     const checked = !todo.checked;
     try {
@@ -13,7 +13,8 @@ const RowTodo = ({todo}) => {
         body: JSON.stringify(body),
       });
       // Tell parent widget to rerender here
-      setRenderList(renderList + 1);
+      todo.checked = checked;
+      setListItem(todo);
       
   
     } catch (err) {}
