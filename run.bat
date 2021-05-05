@@ -1,3 +1,3 @@
-start cmd /k node index
+start cmd /k nodemon index
 cd client
 npm start
