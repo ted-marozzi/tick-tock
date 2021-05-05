@@ -8,7 +8,7 @@ import FolderItem from "./FolderItem";
 const ListItems = ({
   setParentFolderId,
   parentFolderId,
-  setRenderList,
+ 
   renderList,
 }) => {
   const [todos, setTodos] = useState([]);

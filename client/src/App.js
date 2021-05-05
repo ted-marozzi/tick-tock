@@ -62,7 +62,7 @@ function App() {
           <ListItems
             setParentFolderId={setParentFolderId}
             parentFolderId={parentFolderId}
-            setRenderList={setRenderList}
+           
             renderList={renderList}
           />
         </div>
