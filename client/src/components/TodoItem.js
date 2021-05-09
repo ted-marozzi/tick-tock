@@ -1,19 +1,20 @@
 import React, { Fragment } from "react";
 import "./css/RowTodo.css";
-
-const RowTodo = ({todo, setListItem}) => {
+// Todo list item
+const TodoItem = ({todo, setListItem}) => {
+  // Update db when checked
   const updateChecked = async () => {
-    const checked = !todo.checked;
+    const value = !todo.checked;
     try {
-      const body = { checked };
+      const body = { value };
 
-      await fetch(`/todo/updateChecked/${todo.id}`, {
+      await fetch(`/update/todo/of/${todo.id}/set/checked/`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       // Tell parent widget to rerender here
-      todo.checked = checked;
+      todo.checked = value;
       setListItem(todo);
       
   
@@ -37,4 +38,4 @@ const RowTodo = ({todo, setListItem}) => {
   );
 };
 
-export default RowTodo;
+export default TodoItem;

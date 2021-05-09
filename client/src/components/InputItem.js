@@ -1,30 +1,21 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
+// Input for creating folder and todo items.
+const InputItem = ({
+  setParentFolderId={setParentFolderId},
+  parentFolderId={parentFolderId},
+  setRenderList={setRenderList},
+  renderList={renderList}}
+  ) => {
 
-class InputItem extends React.Component {
-  constructor(props) {
-    super(props);
+  const [name, setName] = useState("");
+  const input = useRef(null);
+  useEffect(() => {
+    input.current.focus();
+  }, []);
 
-    this.state = {
-      name: "",
-    };
 
-    this.create = this.create.bind(this);
-    this.setName = this.setDescription.bind(this);
-  }
-
-  componentDidMount() {
-    this.input.focus();
-  }
-
-  setDescription(name) {
-    this.setState({
-      name: name,
-    });
-  }
-
-  async create(e, isTask) {
-    var name = this.state.name;
-    console.log(name);
+  const create = async (e, type) => {
+    // Prevents loop
     e.preventDefault();
     if (name === "") {
       return;
@@ -32,62 +23,53 @@ class InputItem extends React.Component {
 
     try {
       var body = { name };
-      if (isTask) {
-        await fetch(`/todo/${this.props.parentFolderId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-      } else {
-        await fetch(`/folder/${this.props.parentFolderId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-      }
+     
+      await fetch(`/create/${type}/of/${parentFolderId}`, {
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        body: JSON.stringify(body),
+      });
+
     } catch (err) {
       console.log(err.message);
     }
-    this.props.setRenderList(this.props.renderList + 1);
-    this.setState({
-      name: "",
-    });
 
-  }
+    setRenderList(renderList + 1);
+    setName("");
 
-  render() {
-    return (
-      <Fragment>
-        <div className="container">
-          <h1 className="text-center py-3">Tick Tock Todo</h1>
+  };
 
-          <form className="d-flex input-form-flex">
-            <input
-              type="text"
-              ref={(input) => {
-                this.input = input;
-              }}
-              className="form-control"
-              value={this.state.name}
-              onChange={(e) => this.setName(e.target.value)}
-            />
-            <button
-              onClick={(e) => this.create(e, true)}
-              className="ml-5 add-btn btn btn-outline-success"
-            >
-              Add Task
-            </button>
+  
+  return (
+    <Fragment>
+      <div className="container">
+        <h1 className="text-center py-3">Tick Tock Todo</h1>
 
-            <button
-              onClick={(e) => this.create(e, false)}
-              className="ml-5 add-btn btn btn-outline-info"
-            >
-              Add Folder
-            </button>
-          </form>
-        </div>
-      </Fragment>
-    );
-  }
+        <form className="d-flex input-form-flex">
+          <input
+            type="text"
+            ref={input}
+            className="form-control"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <button
+            onClick={(e) => create(e, "todo")}
+            className="ml-5 add-btn btn btn-outline-success"
+          >
+            Add Task
+          </button>
+
+          <button
+            onClick={(e) => create(e, "folder")}
+            className="ml-5 add-btn btn btn-outline-info"
+          >
+            Add Folder
+          </button>
+        </form>
+      </div>
+    </Fragment>
+  );
+  
 }
 export default InputItem;

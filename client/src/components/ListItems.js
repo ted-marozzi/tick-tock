@@ -1,14 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Flipper, Flipped } from "react-flip-toolkit";
 import EditListItem from "./EditListItem";
-import RowTodo from "./RowTodo";
+import TodoItem from "./TodoItem";
 import "./css/InputItem.css";
 import FolderItem from "./FolderItem";
 
+// List of folders and todos
 const ListItems = ({
   setParentFolderId,
   parentFolderId,
- 
   renderList,
 }) => {
   const [todos, setTodos] = useState([]);
@@ -16,10 +16,10 @@ const ListItems = ({
   const [path, setPath] = useState([{ id: 0, name: "Home" }]);
   const [showMessage, setShowMessage] = useState(false);
 
-  //delete todo function
+  // Deletes a list item.
   const deleteListItem = async (listItem) => {
     try {
-
+    
       if (listItem.type === "todo") {
         setTodos(todos.filter((todo) => todo.id !== listItem.id));
       } else if (listItem.type === "folder") {
@@ -29,7 +29,7 @@ const ListItems = ({
         method: "DELETE",
       });
 
-      if(!res.ok) {
+      if (!res.ok) {
         setTodos(todos);
         setFolders(folders);
         setShowMessage(true);
@@ -38,18 +38,17 @@ const ListItems = ({
       console.log(err.message);
     }
   };
-
+  // Sorts checked items to bottom.
   const sortChecked = (unsortedTodos) => {
     var i = unsortedTodos.length;
-    
-    unsortedTodos.sort((a,b) => {
-      if( a.id > b.id )  {
+
+    unsortedTodos.sort((a, b) => {
+      if (a.id > b.id) {
         return 1;
       } else if (a.id === b.id) {
         return 0;
-      } else if( a.id < b.id ) {
-        return -1;
       }
+      return -1;
     });
 
     while (i--) {
@@ -57,10 +56,10 @@ const ListItems = ({
         unsortedTodos.push(unsortedTodos.splice(i, 1)[0]);
       }
     }
-
     return unsortedTodos;
   };
 
+  // Setting folders and todos.
   const setListItems = (setListItemsFn, listItems) => {
     setListItemsFn(listItems);
   };
@@ -80,10 +79,12 @@ const ListItems = ({
     setListItem(setFolders, folders, folder);
   };
 
+
+  // Load everything on mount
   useEffect(() => {
     const getTodos = async () => {
       try {
-        const response = await fetch(`/todo/${parentFolderId}`);
+        const response = await fetch(`getAll/todo/of/${parentFolderId}`);
         var todoResponse = await response.json();
         todoResponse.map((todo) => (todo.type = "todo"));
         setTodos(sortChecked(todoResponse));
@@ -93,7 +94,7 @@ const ListItems = ({
     };
     const getFolders = async () => {
       try {
-        const response = await fetch(`/folder/${parentFolderId}`);
+        const response = await fetch(`getAll/folder/of/${parentFolderId}`);
 
         var folderResponse = await response.json();
 
@@ -118,10 +119,10 @@ const ListItems = ({
     };
     getFolders();
     getTodos();
-
     getPath();
   }, [parentFolderId, renderList]);
 
+  // Flash message
   useEffect(() => {
     if (showMessage) {
       setTimeout(() => {
@@ -131,6 +132,8 @@ const ListItems = ({
   }, [showMessage]);
   return (
     <Fragment>
+
+      {/* Path of folder */}
       <h2>
         <span>Current Folder: </span>
         {path.slice(0, -1).map((folder) => (
@@ -149,11 +152,15 @@ const ListItems = ({
           <small>{path[path.length - 1].name}</small>
         </span>
       </h2>
+
+      {/* Flash warning */}
       {showMessage && (
         <h6 className="text-warning">
           Folder can't be deleted as it is not empty.
         </h6>
       )}
+
+      {/* Folders */}
       <Flipper>
         <table className="table mt-3 text-center">
           <tbody>
@@ -182,6 +189,8 @@ const ListItems = ({
           </tbody>
         </table>
       </Flipper>
+
+      {/* Todos */}
       <h2>Tasks</h2>
       <Flipper flipKey={todos.map((todo) => todo.id).join("")}>
         <table className="table mt-3 text-center">
@@ -189,7 +198,7 @@ const ListItems = ({
             {todos.map((todo) => (
               <Flipped key={todo.id} flipId={todo.id}>
                 <tr key={todo.id}>
-                  <RowTodo
+                  <TodoItem
                     todo={todo}
                     setListItem={setTodo}
                   />
@@ -210,6 +219,9 @@ const ListItems = ({
           </tbody>
         </table>
       </Flipper>
+
+
+
     </Fragment>
   );
 };

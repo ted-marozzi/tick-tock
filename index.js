@@ -16,10 +16,33 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //ROUTES//
-// Log ip
+/*****************************************************************************/
+// Folder Path, based recursive call
+/*****************************************************************************/
+app.get("/getPath/:parentFolderId", async (req, res) => {
+  try {
+    const { parentFolderId } = req.params;
+    const path = await pool.query(`WITH RECURSIVE folderHierarchy AS ( 
+      SELECT id, name, parentFolderId FROM folder WHERE id = $1 
+      UNION ALL SELECT f.id, f.name, f.parentFolderId FROM folder f 
+      INNER JOIN folderHierarchy fh on f.id = fh.parentFolderId ) 
+      SELECT name, id FROM folderHierarchy`, [
+      parentFolderId,
+    ]);
+
+    res.json(path.rows);
+
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+/*****************************************************************************/
+// IP
+/*****************************************************************************/
 app.post("/ip", async (req, res) => {
   try {
-    
+
     const { ip, lat, lon } = req.body;
     const newTodo = await pool.query(
       "INSERT INTO ip (ip, lat, lon) VALUES ($1, $2, $3) RETURNING *",
@@ -32,47 +55,38 @@ app.post("/ip", async (req, res) => {
   }
 });
 
-// create a todo
-app.post("/todo/:parentFolderId", async (req, res) => {
-  try {
-    const { name } = req.body;
-    const { parentFolderId } = req.params;
-   
+/*****************************************************************************/
+// ListItem, folder and todo item
+/*****************************************************************************/
 
-    const newTodo = await pool.query(
-      "INSERT INTO todo (name, parentFolderId) VALUES ($1, $2) RETURNING *",
+// Create a listItem
+app.post("/create/:type/of/:parentFolderId", async (req, res) => {
+
+  try {
+
+    const { type, parentFolderId } = req.params;
+    const { name } = req.body;
+
+    const newListItem = await pool.query(
+      `INSERT INTO ${type} (name, parentFolderId) VALUES ($1, $2) RETURNING *`,
       [name, parentFolderId]
     );
 
-    res.json(newTodo.rows[0]);
+    res.json(newListItem.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
 });
 
-// create a folder
-app.post("/folder/:parentFolderId", async (req, res) => {
+
+// Get all list items of a folder
+app.get("/getAll/:type/of/:parentFolderId", async (req, res) => {
   try {
-    const { name } = req.body;
-    const { parentFolderId } = req.params;
 
-    const newTodo = await pool.query(
-      "INSERT INTO folder (name, parentFolderId) VALUES ($1, $2) RETURNING *",
-      [name, parentFolderId]
-    );
+    const { type, parentFolderId } = req.params;
 
-    res.json(newTodo.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// get all listItems of a folder
-app.get("/todo/:parentFolderId", async (req, res) => {
-  try {
-    const { parentFolderId } = req.params;
     const listItemsOfFolder = await pool.query(
-      `SELECT * FROM todo WHERE parentFolderId = $1 ORDER BY id`,
+      `SELECT * FROM ${type} WHERE parentFolderId = $1 ORDER BY id`,
       [parentFolderId]
     );
 
@@ -82,75 +96,25 @@ app.get("/todo/:parentFolderId", async (req, res) => {
   }
 });
 
-// get all listItems of a folder
-app.get("/folder/:parentFolderId", async (req, res) => {
+// update a list item
+app.put("/update/:type/of/:id/set/:column", async (req, res) => {
   try {
-    
-    const { parentFolderId } = req.params;
-    const listItemsOfFolder = await pool.query(
-      `SELECT * FROM folder WHERE parentFolderId = $1 ORDER BY id`,
-      [parentFolderId]
-    );
 
-    res.json(listItemsOfFolder.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-
-// get a todo
-app.get("/todo/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE id = $1", [
+    const { type, id, column } = req.params;
+    const { value } = req.body;
+    await pool.query(`UPDATE ${type} SET ${column} = $1 WHERE id = $2`, [
+      value,
       id,
     ]);
 
-    res.json(todo.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// update a todo
-
-app.put("/updateName/:listItemType/:id", async (req, res) => {
-  try {
-    
-    const { listItemType, id } = req.params;
-    const { listItemName } = req.body;
-    console.log(listItemName);
-    await pool.query(`UPDATE ${listItemType} SET name = $1 WHERE id = $2`, [
-
-      listItemName,
-      id,
-    ]);
-
-    res.json(`${listItemType} was updated!`);
+    res.json(`${column} was updated!`);
   } catch (err) {
     console.error(err.message);
   }
 });
 
 
-// update a todo checked
-app.put("/todo/updateChecked/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { checked } = req.body;
-    await pool.query("UPDATE todo SET checked = $1 WHERE id = $2", [
-      checked,
-      id,
-    ]);
-
-    res.json("Todo checked was updated!");
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-//delete a todo
+// Delete a todo
 app.delete("/todo/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -161,24 +125,22 @@ app.delete("/todo/:id", async (req, res) => {
   }
 });
 
-//delete a folder
+// Delete a folder
 app.delete("/folder/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const foldersOfFolder = await pool.query(
-      `SELECT id FROM folder WHERE parentFolderId = $1 ORDER BY id`,
+    const children = await pool.query(
+      `SELECT * 
+      FROM todo FULL JOIN folder ON todo.parentFolderid=folder.parentFolderId 
+      WHERE todo.parentFolderid = $1 OR folder.parentFolderid = $1`,
       [id]
     );
-    const todosOfFolder = await pool.query(
-      `SELECT id FROM todo WHERE parentFolderId = $1 ORDER BY id`,
-      [id]
-    );
+    
 
-    if(foldersOfFolder.rows.length == 0 && todosOfFolder.rows.length == [])  {
-      
+    if (children.rows.length == 0) {
       await pool.query("DELETE FROM folder WHERE id = $1", [id]);
       res.json("Folder was deleted!");
-    } else  {
+    } else {
       res.status(400);
       res.json("Folder is not empty and thus can't be deleted");
     }
@@ -188,33 +150,6 @@ app.delete("/folder/:id", async (req, res) => {
   }
 });
 
-app.get("/getPath/:parentFolderId", async (req, res) => {
-  try {
-    const { parentFolderId } = req.params;
-    const path = await pool.query("WITH RECURSIVE folderHierarchy AS ( SELECT id, name, parentFolderId FROM folder WHERE id = $1 UNION ALL SELECT f.id, f.name, f.parentFolderId FROM folder f INNER JOIN folderHierarchy fh on f.id = fh.parentFolderId ) SELECT name, id FROM folderHierarchy", [
-      parentFolderId,
-    ]);
-    
-    res.json(path.rows);
-        
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-// create a todo
-// get all todos
-// update a todo description
-// update a todo checked
-// delete a todo
-
-// create a folder
-// delete a folder
-// update a folder name
-// get a folder
-// move a folder
-// move a todo
-// get path of a folder
 
 /*
 todos table
@@ -243,10 +178,3 @@ app.get("*", (_req, res) => {
 app.listen(PORT, () => {
   console.log(`server has started on port ${PORT}`);
 });
-
-// Folders
-
-// get todos of a path "/todos" or "/todos/personal"
-// querys the database for the path and returns all of those todos
-
-// on a page, need to list all the folders avaliable

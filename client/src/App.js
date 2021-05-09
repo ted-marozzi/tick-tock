@@ -7,12 +7,10 @@ function App() {
   const [parentFolderId, setParentFolderId] = useState(0);
   const [renderList, setRenderList] = useState(0);
 
-
+  // Used to log users ip.
   useEffect(() => {
-   
-
     const logIp = async (ipData) => {
-      
+
       try {
         await fetch("/ip", {
           method: "POST",
@@ -35,7 +33,7 @@ function App() {
           };
           logIp(ipData);
         });
-     
+
       } catch (err) {
         console.log(err.message);
       }
@@ -62,7 +60,7 @@ function App() {
           <ListItems
             setParentFolderId={setParentFolderId}
             parentFolderId={parentFolderId}
-           
+
             renderList={renderList}
           />
         </div>
