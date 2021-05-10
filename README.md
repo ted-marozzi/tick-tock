@@ -11,6 +11,9 @@ A todo list app featuring:
 This app was built using the PERN Stack and deployed to heroku.
 
 P - PostgreSQL Database
+
 E - Express.js
+
 R - React.js
+
 N - Node.js
