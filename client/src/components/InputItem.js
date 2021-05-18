@@ -1,11 +1,13 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 // Input for creating folder and todo items.
-const InputItem = ({
-  setParentFolderId={setParentFolderId},
-  parentFolderId={parentFolderId},
-  setRenderList={setRenderList},
-  renderList={renderList}}
-  ) => {
+const InputItem = (
+  {
+    setParentFolderId,
+    parentFolderId,
+    setRenderList,
+    renderList
+  }
+) => {
 
   const [name, setName] = useState("");
   const input = useRef(null);
@@ -23,10 +25,10 @@ const InputItem = ({
 
     try {
       var body = { name };
-     
+
       await fetch(`/create/${type}/of/${parentFolderId}`, {
         method: "POST",
-        headers: { "Content-Type" : "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
@@ -39,7 +41,7 @@ const InputItem = ({
 
   };
 
-  
+
   return (
     <Fragment>
       <div className="container">
@@ -70,6 +72,6 @@ const InputItem = ({
       </div>
     </Fragment>
   );
-  
+
 }
 export default InputItem;
